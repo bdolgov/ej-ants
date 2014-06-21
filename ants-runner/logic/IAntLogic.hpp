@@ -35,13 +35,14 @@ namespace antlogic
         BITE_RIGHT = 7,
         // манипуляция с едой:
         GET = 8,
-        PUT = 9
+        PUT = 9,
+		NOTHING = 10
     };
 
     // Действие муравья на текущем ходу
     struct AntAction
     {
-        AntActionType actionType = MOVE_UP;
+        AntActionType actionType = NOTHING;
         bool putSmell = false; // оставить ли запах на клетке
         int smell = 0; // оттенок оставляемого муравьём запаха
     };

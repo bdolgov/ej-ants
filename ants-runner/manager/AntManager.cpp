@@ -556,7 +556,7 @@ void AntManager::step(int iRun)
                 }
                 if (index >= targetCell.ants.size())
                 {
-                    printf("ERROR: didn't find the enemy ant");
+//                    printf("ERROR: didn't find the enemy ant");
                     getchar();
                     exit(0);
                 }
@@ -580,7 +580,7 @@ void AntManager::step(int iRun)
 
                 if (player->withFood)
                 {
-                    printf("WARNING: Already has food. Ignored.\n");
+//                    printf("WARNING: Already has food. Ignored.\n");
                     continue;
                 }
                 Cell& targetCell = mainField[player->pos];
@@ -612,7 +612,7 @@ void AntManager::step(int iRun)
 
                 if (!player->withFood)
                 {
-                    printf("WARNING: Has no food to put. Ignored.\n");
+//                    printf("WARNING: Has no food to put. Ignored.\n");
                     continue;
                 }
                 Cell& targetCell = mainField[player->pos];
@@ -627,7 +627,7 @@ void AntManager::step(int iRun)
             }
             else
             {
-                printf("WARNING: Incorrect Action. Ignored.\n");
+//                printf("WARNING: Incorrect Action. Ignored.\n");
             }
         }
     }

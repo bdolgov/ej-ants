@@ -115,6 +115,10 @@ namespace antlogic
 
     AntAction AntLogicDLL::GetAction(const antlogic::Ant &ant, AntSensor sensors[3][3])
     {
+		if (!alive)
+		{
+			return AntAction();
+		}
         AntRequestMessage request;
         
         request.hasFood = ant.hasFood();
@@ -140,7 +144,14 @@ namespace antlogic
         message_queue::size_type r;
         unsigned int p;
         try {
-            out->receive(&res, sizeof(AntResponseMessage), r, p);
+			boost::posix_time::ptime t(boost::posix_time::microsec_clock::universal_time());
+			t += boost::posix_time::milliseconds(300);
+            if (!out->timed_receive(&res, sizeof(AntResponseMessage), r, p, t))
+			{
+				/* report tl */
+				alive = false;
+				return AntAction();
+			}
         }
         catch(interprocess_exception &ex){
             std::cerr << "main receive" << std::endl;

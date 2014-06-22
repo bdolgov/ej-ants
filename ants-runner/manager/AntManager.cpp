@@ -1,6 +1,7 @@
 #include "AntManager.hpp"
 #include <memory.h>
 #include <algorithm>
+#include <iostream>
 
 using std::pair;
 
@@ -64,7 +65,7 @@ antlogic::AntSensor Cell::sense(Team* team) const
 	
 	for (auto& i : ants)
 	{
-		if (i->teamId == team->id)
+		if (i->teamId != -1)
 		{
 			(i->teamId == team->id ? res.isFriend : res.isEnemy) = true;
         }

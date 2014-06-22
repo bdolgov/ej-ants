@@ -177,7 +177,8 @@ void AntManager::step()
 			{
 				for (int j = -1; j <= 1; ++j)
 				{
-					sensors[i + 1][j + 1] = mainField[ant->pos].sense(&*team);
+					Point p = ant->pos; p.x += i; p.y += j;
+					sensors[i + 1][j + 1] = mainField[p].sense(&*team);
 				}
 			}
 			antlogic::AntAction res = team->ai->GetAction(*ant, sensors);

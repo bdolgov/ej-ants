@@ -14,7 +14,7 @@ MetaAnt::MetaAnt(int teamId, antgui::Point startPos)
 
 bool MetaAnt::isFrozen() const
 {
-    return ftime;
+	return ftime;
 }
 
 void MetaAnt::tick()
@@ -32,58 +32,58 @@ void Cell::tick()
 
 antgui::Point MetaAnt::getPoint() const
 {
-    return pos;
+	return pos;
 }
 
 char* MetaAnt::getMemory() const
 {
-    return mem.get();
+	return mem.get();
 }
 
 bool MetaAnt::hasFood() const
 {
-    return withFood;
+	return withFood;
 }
 
 int MetaAnt::getTeamId() const
 {
-    return teamId;
+	return teamId;
 }
 
 antlogic::AntSensor Cell::sense(Team* team) const
 {
-    antlogic::AntSensor res;
+	antlogic::AntSensor res;
 
-    res.isEnemy = false;
-    res.isFriend = false;
+	res.isEnemy = false;
+	res.isFriend = false;
 
-    res.isEnemyHill = false;
-    res.isMyHill = false;
+	res.isEnemyHill = false;
+	res.isMyHill = false;
 
-    res.isFood = food;
-    res.isWall = isWall;
+	res.isFood = food;
+	res.isWall = isWall;
 	
 	for (auto& i : ants)
 	{
 		if (i->teamId != -1)
 		{
 			(i->teamId == team->id ? res.isFriend : res.isEnemy) = true;
-        }
-    }
+		}
+	}
 
-    if (team->id == hillId)
-    {
-        res.isMyHill = true;
-    }
-    else if (hillId != -1)
-    {
-        res.isEnemyHill = true;
-    }
+	if (team->id == hillId)
+	{
+		res.isMyHill = true;
+	}
+	else if (hillId != -1)
+	{
+		res.isEnemyHill = true;
+	}
 
-    res.smell = smell;
-    res.smellIntensity = smellIntensity;
+	res.smell = smell;
+	res.smellIntensity = smellIntensity;
 
-    return res;
+	return res;
 }
 
 //

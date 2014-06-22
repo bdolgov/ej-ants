@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += c++11
+CONFIG += c++11 debug 
 DEPENDPATH = . gui logic manager
 QT += widgets
 INCLUDEPATH += . \

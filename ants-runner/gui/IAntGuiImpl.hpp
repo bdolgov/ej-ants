@@ -105,7 +105,7 @@ namespace antgui
 		virtual void Clear()
 		{
             antMap.clear();
-            foodMap.clear();
+//            foodMap.clear();
 		}
 
         void init()
@@ -120,7 +120,8 @@ namespace antgui
 
         virtual void SetFood(const Food &food)
 		{
-            foodMap.insert(std::make_pair(food.getPoint(), std::make_shared<ConcreteFood>(food)));
+			foodMap.erase(food.getPoint());
+			foodMap.insert(std::make_pair(food.getPoint(), std::make_shared<ConcreteFood>(food)));
 		}
 
 		virtual void Paint();

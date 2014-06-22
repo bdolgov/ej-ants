@@ -18,12 +18,12 @@ main_window::main_window(const GameSettings &settings)
         gui->init();
     }
     manager.setGui(gui);
-    manager.setFoodGeneretor(make_shared<food_iterator>(FIELD_SIZE));
+    //manager.setFoodGeneretor(make_shared<food_iterator>(FIELD_SIZE));
     //manager.setFoodGeneretor(make_shared<file_food_iterator>(settings.mapName));
 }
 
 void main_window::nextStep(void)
 {
-    manager.step(step++);
+    manager.step();
     gui->Paint();
 }

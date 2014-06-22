@@ -601,8 +601,11 @@ void AntManager::step(int iRun)
                     for (int i = 0; i < 4; i++)
                     {
                         if (hillOf(i).x == player->pos.x
-                        && hillOf(i).y == player->pos.y)
-                            teams[i].score -= 1;
+                        && hillOf(i).y == player->pos.y) {
+                            if (teams[i].score > 0) {
+                                 teams[i].score -= 1;
+                            }
+                        }
                     }
                 }
             }
@@ -617,6 +620,7 @@ void AntManager::step(int iRun)
                 }
                 Cell& targetCell = mainField[player->pos];
                 targetCell.food++;
+                targetCell.isFood = true;
                 player->withFood = false;
 
                 if (hillOf(player->teamId).x == player->pos.x

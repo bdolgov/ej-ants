@@ -81,6 +81,7 @@ namespace antgui
 	{
         map<Point, std::shared_ptr<const Food> > foodMap;
         map<Point, std::shared_ptr<const Ant> > antMap;
+	vector<Ant::arr_t> curAnts;
 		vector<int> score;
 		typedef tuple<vector<int>, vector<Ant::arr_t>, vector<Food::arr_t>> step_t;
 		vector<step_t> steps;

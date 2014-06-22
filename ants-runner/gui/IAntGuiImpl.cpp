@@ -6,11 +6,12 @@ namespace antgui
 
     void AntGuiLogImpl::SetAnt(const Ant &ant)
     {
-        auto it = antMap.find(ant.getPoint());
+	curAnts.push_back(ant.toArray());
+/*        auto it = antMap.find(ant.getPoint());
         if (it == antMap.end() || *(it->second) < ConcreteAnt(ant))
         {
             antMap.insert(std::make_pair(ant.getPoint(), std::make_shared<ConcreteAnt>(ant)));
-        }
+        }*/
     }
 	
 	string toJson(int x)
@@ -95,8 +96,10 @@ namespace antgui
 		{
 			foods.emplace_back(i.second->toArray());
 		}
+		ants = curAnts;
 		std::sort(ants.begin(), ants.end(), [](const Ant::arr_t& a, const Ant::arr_t& b) { return a[2] < b[2]; });
 		step_t step { score, move(ants), move(foods) };
+		curAnts.clear();
 		steps.emplace_back(move(step));
     }
 

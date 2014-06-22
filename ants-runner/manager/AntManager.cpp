@@ -1,5 +1,6 @@
 #include "AntManager.hpp"
 #include <memory.h>
+#include <algorithm>
 
 using std::pair;
 

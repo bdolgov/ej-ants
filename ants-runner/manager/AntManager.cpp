@@ -128,7 +128,7 @@ AntManager::AntManager(const GameSettings& _settings, int _height, int _width, i
 		mainField[bottom].isWall = true;
 	}
 
-	int tid = 1;
+	int tid = 0;
 	for (auto i : settings.players)
 	{
 		Team *t;
@@ -274,12 +274,12 @@ void AntManager::bite(MetaAnt* ant, int dx, int dy)
 void AntManager::food(MetaAnt* ant, bool put)
 {
 	auto &cell = mainField[ant->pos];
-	if (put && cell.food && !ant->withFood)
+	if (!put && cell.food && !ant->withFood)
 	{
 		--cell.food;
 		ant->withFood = true;
 	}
-	else if (!put && ant->withFood)
+	else if (put && ant->withFood)
 	{
 		++cell.food;
 		ant->withFood = false;

@@ -253,14 +253,14 @@ void AntManager::bite(MetaAnt* ant, int dx, int dy)
 	Point bitePoint = ant->pos;
 	bitePoint.x += dx;
 	bitePoint.y += dy;
-	if (mainField[bitePoint].ants.empty())
-	{
-		return;
-	}
 	vector<MetaAnt*> candidates;
 	for (auto& i : mainField[bitePoint].ants)
 	{
-		candidates.push_back(i);
+		if (i->teamId != ant->teamId) candidates.push_back(i);
+	}
+	if (candidates.empty())
+	{
+		return;
 	}
 	sort(candidates.begin(), candidates.end(), [](MetaAnt* a, MetaAnt* b) {
 		return a->ftime < b->ftime;

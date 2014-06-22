@@ -271,7 +271,13 @@ void AntManager::bite(MetaAnt* ant, int dx, int dy)
 		if ((*end)->ftime != (*(end - 1))->ftime) break;
 		++end;
 	}
-	candidates[(rand() % (end - candidates.begin()))]->ftime = FREEZE_TIME;
+	MetaAnt *ant2 = candidates[(rand() % (end - candidates.begin()))];
+	ant2->ftime = FREEZE_TIME;
+	if (ant2->withFood)
+	{
+		ant2->withFood = false;
+		++mainField[ant2->pos].food;
+	}
 }
 
 void AntManager::food(MetaAnt* ant, bool put)

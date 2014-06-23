@@ -183,6 +183,11 @@ void AntManager::step()
 				}
 			}
 			antlogic::AntAction res = team->ai->GetAction(*ant, sensors);
+			if (res.putSmell)
+			{
+				mainField[ant->pos].smell = res.smell;
+				mainField[ant->pos].smellIntensity = 100;
+			}
 			switch (res.actionType)
 			{
 				case antlogic::AntActionType::MOVE_UP:
@@ -217,11 +222,6 @@ void AntManager::step()
 				break;
 				default:
 				break;
-			}
-			if (res.putSmell)
-			{
-				mainField[ant->pos].smell = res.smell;
-				mainField[ant->pos].smellIntensity = 100;
 			}
 		}
 	}

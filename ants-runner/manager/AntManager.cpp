@@ -218,6 +218,11 @@ void AntManager::step()
 				default:
 				break;
 			}
+			if (res.putSmell)
+			{
+				mainField[ant->pos].smell = res.smell;
+				mainField[ant->pos].smellIntensity = 100;
+			}
 		}
 	}
 	gui->BeginPaint();

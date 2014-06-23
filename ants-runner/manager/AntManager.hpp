@@ -97,6 +97,7 @@ typedef food_iterator0 food_iterator;
 
 struct MetaAnt : public antgui::Ant, public antlogic::Ant
 {
+	bool dead = false;
 	int		   teamId;
 	antgui::Point pos;
 	unique_ptr<char[]> mem;

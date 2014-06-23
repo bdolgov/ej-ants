@@ -17,6 +17,7 @@ namespace antlogic
 	class AntLogicDLL : public IAntLogic
 	{
 		bool alive = true;
+		bool isDead() { return !alive; }
 		void *handle;
 		tf func;
 		std::thread worker;

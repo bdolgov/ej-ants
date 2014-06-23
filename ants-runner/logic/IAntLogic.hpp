@@ -62,6 +62,7 @@ namespace antlogic
         static std::shared_ptr<IAntLogic> GetAntLogic(int teamId);
         static std::shared_ptr<IAntLogic> GetAntLogic(std::string fileName, std::string id);
         virtual AntAction GetAction(const Ant&, AntSensor[3][3]) = 0;
+	virtual bool isDead() { return false; }
         virtual ~IAntLogic() {}
     };
 }

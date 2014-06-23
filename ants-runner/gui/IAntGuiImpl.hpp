@@ -105,7 +105,7 @@ namespace antgui
 		virtual void Clear()
 		{
             antMap.clear();
-//            foodMap.clear();
+            foodMap.clear();
 		}
 
         void init()

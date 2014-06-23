@@ -47,7 +47,7 @@ bool MetaAnt::hasFood() const
 
 int MetaAnt::getTeamId() const
 {
-	return teamId;
+	return teamId + (dead ? 4 : 0);
 }
 
 antlogic::AntSensor Cell::sense(Team* team) const
@@ -143,6 +143,7 @@ AntManager::AntManager(const GameSettings& _settings, int _height, int _width, i
 
 void AntManager::step()
 {
+	gui->BeginPaint();
 	if (!curStep)
 	{
 		ifstream foodStream(settings.mapName);
@@ -183,6 +184,10 @@ void AntManager::step()
 				}
 			}
 			antlogic::AntAction res = team->ai->GetAction(*ant, sensors);
+			if (team->ai->isDead())
+			{
+				ant->dead = true;
+			}
 			if (res.putSmell)
 			{
 				mainField[ant->pos].smell = res.smell;
@@ -225,7 +230,6 @@ void AntManager::step()
 			}
 		}
 	}
-	gui->BeginPaint();
 	for (auto& i : teams)
 	{
 		gui->SetTeamScore(i->id, mainField[i->hill].food);

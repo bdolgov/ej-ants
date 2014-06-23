@@ -150,6 +150,7 @@ namespace antlogic
 			{
 				/* report tl */
 				alive = false;
+				std::cerr << "Team " << q1 << " handler has just dead" << std::endl;
 				return AntAction();
 			}
         }

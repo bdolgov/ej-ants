@@ -246,6 +246,7 @@ void AntManager::move(MetaAnt* ant, int dx, int dy)
 	newPoint.y += dy;
 	if (mainField[newPoint].isWall)
 	{
+		cerr << "Team " << ant->teamId << " ant has just moved into the wall!" << endl;
 		return;
 	}
 	mainField[ant->pos].ants.erase(ant);
@@ -265,6 +266,7 @@ void AntManager::bite(MetaAnt* ant, int dx, int dy)
 	}
 	if (candidates.empty())
 	{
+		cerr << "Team " << ant->teamId << " ant has just attempted to bite an empty cell!" << endl;
 		return;
 	}
 	sort(candidates.begin(), candidates.end(), [](MetaAnt* a, MetaAnt* b) {
@@ -282,6 +284,7 @@ void AntManager::bite(MetaAnt* ant, int dx, int dy)
 	{
 		ant2->withFood = false;
 		++mainField[ant2->pos].food;
+		gui->SetFood(ConcreteFood(ant2->pos, mainField[ant2->pos].food));
 	}
 }
 
@@ -297,6 +300,10 @@ void AntManager::food(MetaAnt* ant, bool put)
 	{
 		++cell.food;
 		ant->withFood = false;
+	}
+	else
+	{
+		cerr << "Team " << ant->teamId << " ant has just ignored amount of the food on the field!" << endl;
 	}
 	gui->SetFood(ConcreteFood(ant->pos, cell.food));
 }

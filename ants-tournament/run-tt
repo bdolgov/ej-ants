@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "RUN ID $1" >> /tmp/antstt.log
+ANTSTT_ARGS="-t /tmp/antstt.$$" /home/judges/compile/scripts/antstt run.in $1 2>> /tmp/antstt.log
+if [ "$?" != "0" ]; then
+	echo "run-tt: failed to compile" >&2
+	exit 1
+fi
+echo "RUN ID $1" >> /tmp/ants-run.log
+./$1 2>>/tmp/ants-run.log > /home/judges/ants/json/$1.json
+if [ "$?" != "0" ]; then
+	echo "run-tt: failed to run" >&2
+	exit 1
+fi
+cat /tmp/antstt.$$
+rm -f "$1"
+rm -f "/tmp/antstt.$$"
+#rm -f "run.in"

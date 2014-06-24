@@ -151,6 +151,38 @@ int main()
 		{
 			return a->preliminaryScore > b->preliminaryScore;
 		});
+	
+	/* Rewrite? */
+	int sz = participants.size() / 4 * 4;
+	vector<unique_ptr<Participant>> participants0;
+	for (int i = 0; i < sz; ++i)
+	{
+		int idx;
+		if (i % 4 == 0)
+		{
+			idx = i / 4;
+		}
+		else if (i % 4 == 1)
+		{
+			idx = i / 4 + sz / 4;
+		}
+		else if (i % 4 == 2)
+		{
+			idx = i / 4 + sz / 2;
+		}
+		else
+		{
+			idx = i / 4 + sz / 2 + sz / 4;
+		}
+		participants0.emplace_back(move(participants[idx]));
+	}
+	for (int i = sz; i < participants.size(); ++i)
+	{
+		participants0.emplace_back(move(participants[i]));
+	}
+	swap(participants, participants0);
+	for (auto& i : participants)
+		cerr << i->name << endl;
 
 	vector<vector<unique_ptr<Group>>> groups;
 	cerr << "Generating round 0 groups..." << endl;

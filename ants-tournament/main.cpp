@@ -3,6 +3,9 @@
 #include <memory>
 #include <map>
 #include <algorithm>
+#include <sstream>
+#include <unistd.h>
+#include <fstream>
 
 using namespace std;
 
@@ -14,6 +17,49 @@ void judge(Play* p)
 	{
 		i.score = rand() % 100;
 	}
+//	return;
+	stringstream title;
+	vector<Player*> ps;
+	ps.resize(p->players.size());
+	int idx = 0;
+	for (auto& i : p->players)
+	{
+		if (idx++) title << ",";
+		title << "\"" << i.teamId << "\":\"" << i.participant->name << " (" << i.participant->id << ")\"";
+		ps[i.teamId] = &i;
+	}
+	ofstream inputFile("run.in");
+	inputFile << "{" << title.str() << "}" << endl;
+	for (auto& i : ps)
+	{
+		inputFile << i->participant->id << endl;
+	}
+	inputFile.close();
+
+	setenv("ANTSTT_MAP", cfg()->tournamentMap().c_str(), 1);
+	setenv("ANTSTT_ARGS", "-t", 1);
+
+	FILE *results = popen(("./run-tt " + to_string(p->id)).c_str(), "r");
+	if (!results)
+	{
+		cerr << "run-tt did not start: ";
+		perror("popen()");
+		for (auto& i : ps)
+		{
+			i->score = 0;
+		}
+		return;
+	}
+	for (auto& i : ps)
+	{
+		if (fscanf(results, "%d", &(i->score)) != 1)
+		{
+			cerr << "run-tt did not write enough information for play " << p->id << "!" << endl << idx << endl;;
+			i->score = 0;
+			break;
+		}
+	}
+	fclose(results);
 }
 
 void generatePlays(Group* g, Participant* fakeParticipant)

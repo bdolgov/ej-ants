@@ -3,7 +3,7 @@
 struct Cfg : Configuration
 {
 	int playIdSeq() const { return 910000; }
-	int steps() const { return 100; }
+	int steps() const { return 2000; }
 	string preliminaryMap() const { return "02"; }
 	string preliminaryStrategy() const { return "0"; }
 	string tournamentMap() const { return "02"; }

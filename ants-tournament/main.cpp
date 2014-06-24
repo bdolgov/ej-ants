@@ -37,7 +37,7 @@ void judge(Play* p)
 	inputFile.close();
 
 	setenv("ANTSTT_MAP", cfg()->tournamentMap().c_str(), 1);
-	setenv("ANTSTT_ARGS", "-t", 1);
+	setenv("ANTSTT_STEPS", to_string(cfg()->steps()).c_str(), 1);
 
 	FILE *results = popen(("./run-tt " + to_string(p->id)).c_str(), "r");
 	if (!results)
@@ -171,7 +171,7 @@ int main()
 	}
 	cerr << "Round 0 groups have been generated." << endl;
 
-	for (int round = 0; groups[max(0, round - 1)].size() > 1;)
+	for (int round = 0; !round || groups[round - 1].size() > 1;)
 	{
 		cerr << "Generating round " << round << " plays..." << endl;
 		for (auto& j : groups[round])

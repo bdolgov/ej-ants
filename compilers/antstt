@@ -57,9 +57,13 @@ if [ -z "$ANTSTT_MAP" ]; then
 	ANTSTT_MAP=00
 fi
 
+if [ -z "$ANTSTT_STEPS" ]; then
+	ANTSTT_STEPS=1000
+fi
+
 cat > $2 <<EOF
 #!/bin/bash
-echo -e "/home/judges/ants/maps/$ANTSTT_MAP\n1000\n500\n$IDS" | /home/judges/ants/bin/Ants $ANTSTT_ARGS
+echo -e "/home/judges/ants/maps/$ANTSTT_MAP\n$ANTSTT_STEPS\n500\n$IDS" | /home/judges/ants/bin/Ants $ANTSTT_ARGS
 
 EOF
 chmod +x $2

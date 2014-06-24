@@ -14,4 +14,4 @@ fi
 cat /tmp/antstt.$$
 rm -f "$1"
 rm -f "/tmp/antstt.$$"
-#rm -f "run.in"
+rm -f "run.in"

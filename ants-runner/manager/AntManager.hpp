@@ -28,7 +28,7 @@ const int dy[] = {0,  0, -1, 1, 0};
 const int df[] = {-5,  -5, -5, -5, 0};
 
 struct GameSettings {
-	std::string mapName;
+	std::string mapName, dumpScore;
 	std::vector<std::string> players;
 	int stepLimit, timeLimit;
 };
@@ -182,6 +182,7 @@ public:
 
 	void step();
 	void setGui(std::shared_ptr<antgui::IAntGui> gui);
+	int score(int team);
 };
 
 #endif

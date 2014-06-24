@@ -243,6 +243,11 @@ void AntManager::step()
 	++curStep;
 }
 
+int AntManager::score(int team)
+{
+	return mainField[hillOf(team)].food;
+}
+
 void AntManager::move(MetaAnt* ant, int dx, int dy)
 {
 	Point newPoint = ant->pos;

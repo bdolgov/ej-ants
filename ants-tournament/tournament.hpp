@@ -71,11 +71,11 @@ struct Configuration
 };
 static Configuration* cfg() { return Configuration::instance; }
 
-class Renderer
+class IRenderer
 {
 	public:
 		virtual void render(const vector<vector<Group*>>& groups) = 0;
-		static Renderer* get();
+		static IRenderer* get();
 };
 
 #endif

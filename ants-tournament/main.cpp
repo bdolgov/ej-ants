@@ -190,5 +190,6 @@ int main()
 		}
 		groups0.emplace_back(move(a));
 	}
-	Renderer::get()->render(groups0);
+	unique_ptr<IRenderer> r(IRenderer::get());
+	r->render(groups0);
 }

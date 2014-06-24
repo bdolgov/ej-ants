@@ -1,0 +1,64 @@
+.divWrap {
+  display: table;
+  float:left;
+  width:auto;
+  margin:10px;
+  border-spacing:1px;
+}
+
+.divFiller {
+  height: 118px;
+}
+
+.divHalfFiller {
+  height: 59px;
+}
+
+
+.divTable
+{
+    display:  table;
+    width:auto;
+    background-color:#ffffff;
+    border:1px solid  #666666;
+    border-spacing:1px;/*cellspacing:poor IE support for  this*/
+    /* border-collapse:separate;*/
+}
+.divRow
+{   
+   display:table-row;
+   width:auto;
+}
+
+.divHeadCell
+{
+  margin: 2px;  
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width: calc(100% - 4px);
+  background-color:#D8BFD8;
+}
+.divCell
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:150px;
+  background-color:#D8BFD8;
+}
+.divWinCell
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:150px;
+  background-color:#BBBBFF;
+}
+.divLoseCell
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:150px;
+  background-color:#FFBD9C;
+}

@@ -1,0 +1,46 @@
+#!/bin/sh
+# $Id: g++.in 5608 2010-01-07 19:51:45Z cher $
+# Copyright (c) 2001-2010 Alexander Chernov <cher@ejudge.ru>
+
+# using EJUDGE_FLAGS we may pass additional flags
+
+if false; then
+LANG_CONFIG_DIR="/home/judges/compile/conf/lang.d"
+[ "${EJUDGE_LANG_CONFIG}" = "" ] && EJUDGE_LANG_CONFIG="${LANG_CONFIG_DIR}/ants++.cfg"
+
+if [ -f "${EJUDGE_LANG_CONFIG}" ]
+then
+  . "${EJUDGE_LANG_CONFIG}"
+else
+  version="unknown"
+  GPPRUN="g++"
+  GPPDIR=
+fi
+
+if [ x"${version}" = x ]
+then
+  echo "This language is not supported." >&2
+  exit 1
+fi
+
+if [ x"${GPPDIR}" != x ]
+then
+    PATH="${GPPDIR}:${PATH}"
+fi
+
+[ x"${EJUDGE_FLAGS}" = x ] && EJUDGE_FLAGS="-Wall -O2"
+fi
+unset LANG
+unset LC_ALL
+unset LC_MESSAGES
+unset LANGUAGE
+
+mkdir /home/judges/ants/so/$2
+g++ -O2 -shared -std=c++11 -I/home/judges/ants/include -o /home/judges/ants/so/$2/libAnt.so $1 || exit 1
+cat > $2 <<EOF
+#!/bin/bash
+
+echo -e "/home/judges/ants/maps/00\n10\n500\n/home/judges/ants/so/$2/libAnt.so\n/home/judges/ants/so/$2/libAnt.so" | /home/judges/ants/bin/Ants
+
+EOF
+chmod +x $2

@@ -270,4 +270,10 @@ int main()
 	}
 	unique_ptr<IRenderer> r(IRenderer::get());
 	r->render(groups0);
+	vector<Participant*> participants1;
+	for (auto &i : participants)
+	{
+		participants1.emplace_back(&*i);
+	}
+	r->renderParticipants(participants1);
 }

@@ -75,6 +75,7 @@ class IRenderer
 {
 	public:
 		virtual void render(const vector<vector<Group*>>& groups) = 0;
+		virtual void renderParticipants(const vector<Participant*>& participants) = 0;
 		static IRenderer* get();
 };
 

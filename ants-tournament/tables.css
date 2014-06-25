@@ -1,5 +1,5 @@
 .divWrap {
-  display: table;
+  /*display: table;*/
   float:left;
   width:auto;
   margin:10px;
@@ -7,11 +7,14 @@
 }
 
 .divFiller {
+  border-spacing:1px;
   height: 118px;
+  border-spacing:1px;
 }
 
 .divHalfFiller {
   height: 59px;
+  border-spacing:1px;
 }
 
 

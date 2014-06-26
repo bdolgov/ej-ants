@@ -11,7 +11,7 @@ const int MAXL = 30;
 
 using namespace std;
 
-const char *cells[2] = {"divLoseCell", "divWinCell"};
+const char *cells[] = {"divLoseCell", "divWinCell", "divWinCellSmooth", "divWinCellShort", "divWinCellSmoothShort"};
 
 struct Renderer : IRenderer
 {
@@ -47,7 +47,7 @@ void make_group_table(char *s, int round_id, int group_id, const Group* group) {
   fprintf(f, "\t\t<div class=\"divRow\">\n");
   fprintf(f, "\t\t\t<div class=\"divCell\" align=\"center\"> Бой \\ Команда </div>\n");
   for (int i = 0; i < len(group->participants); i++) {
-    fprintf(f, "\t\t\t<div class=\"%s\">%s</div>\n", cells[i / 2], group->participants[i].participant->name.c_str());    
+    fprintf(f, "\t\t\t<div class=\"%s\">%s</div>\n", cells[group->participants[i].passed], group->participants[i].participant->name.c_str());    
   }
   fprintf(f, "\t\t</div>\n");
   
@@ -63,7 +63,7 @@ void make_group_table(char *s, int round_id, int group_id, const Group* group) {
           break;
         }          
       }  
-      fprintf(f, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[j / 2], score);
+      fprintf(f, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[group->participants[j].passed], score);
     }      
     fprintf(f, "\t\t</div>\n");
   }
@@ -71,7 +71,7 @@ void make_group_table(char *s, int round_id, int group_id, const Group* group) {
   fprintf(f, "\t\t<div class=\"divRow\">\n");
   fprintf(f, "\t\t\t<div class=\"divCell\"> Сумма </div>\n");
   for (int i = 0; i < len(group->participants); i++) {
-    fprintf(f, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[i / 2], group->participants[i].score);
+    fprintf(f, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[group->participants[i].passed], group->participants[i].score);
   }
   fprintf(f, "\t\t</div>\n");
   
@@ -94,11 +94,11 @@ void make_round(int x, const vector<vector<Group*> >& groups, const vector<vecto
   
   for (int i = 0; i < len(groups[x]); i++) {  
     while (curx + 2 <= cords[x][i]) {
-      fprintf(b, "\t\t<div class=\"divFiller\">  </div>\n");
+      //fprintf(b, "\t\t<div class=\"divFiller\">  </div>\n");
       curx += 2;
     }
     while (curx + 1 <= cords[x][i]) {
-      fprintf(b, "\t\t<div class=\"divHalfFiller\"> </div>\n");     
+      //fprintf(b, "\t\t<div class=\"divHalfFiller\"> </div>\n");     
       curx += 1;
     }
     curx += 2;
@@ -109,14 +109,16 @@ void make_round(int x, const vector<vector<Group*> >& groups, const vector<vecto
     fprintf(b, "\t\t\t</div>\n");
     for (int j = 0; j < len(groups[x][i]->participants); j++) {
       fprintf(b, "\t\t\t<div class=\"divRow\">\n");
-      fprintf(b, "\t\t\t\t<div class=\"%s\"> %s </div>\n", cells[j / 2], groups[x][i]->participants[j].participant->name.c_str());
-      fprintf(b, "\t\t\t\t<div class=\"%s\"> %d </div>\n", cells[j / 2], groups[x][i]->participants[j].score);
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> %s </div>\n", 
+              cells[groups[x][i]->participants[j].passed], groups[x][i]->participants[j].participant->name.c_str());
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> %d </div>\n", 
+              cells[groups[x][i]->participants[j].passed], groups[x][i]->participants[j].score);
       fprintf(b, "\t\t\t</div>\n");     
     }
     for (int j = 0; j < 4 - len(groups[x][i]->participants); j++) {
       fprintf(b, "\t\t\t<div class=\"divRow\">\n");
-      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[1]);
-      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[1]);
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[0]);
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[0]);
       fprintf(b, "\t\t\t</div>\n");
     }
     fprintf(b, "\t\t</div>\n");    
@@ -157,7 +159,7 @@ void Renderer::render(const vector<vector<Group*> >& groups)
   }
   b = fopen("./tables/results.html", "wt");
   assert(b);
-  
+
   
   fprintf(b, "<html>\n");
   
@@ -166,10 +168,13 @@ void Renderer::render(const vector<vector<Group*> >& groups)
   fprintf(b, "\t<meta charset='utf-8'/>\n");
   fprintf(b, "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../tables.css\">\n");
   fprintf(b, "</head>\n");
-  fprintf(b, "<body>\n");
+  fprintf(b, "<body>\n");  
+  fprintf(b, "<div style=\"width:3000px\"\n>");
+  
   for (int i = 0; i < len(groups); i++) {
     make_round(len(groups) - i - 1, groups, gtables, cords);
-  }  
+  } 
+  fprintf(b, "</div>");
   fprintf(b, "</body>\n");
   fprintf(b, "</html>\n");
   fclose(b);
@@ -185,10 +190,27 @@ void Renderer::renderParticipants(const vector<Participant*>& participants) {
   fprintf(b, "\t<meta charset='utf-8'/>\n");
   fprintf(b, "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../tables.css\">\n");
   fprintf(b, "</head>\n");
-  fprintf(b, "<body>\n");
+  fprintf(b, "<body link=\"#000080\" vlink=\"#000080\" alink=\"#FF0000\">\n");
   
-  
-  
+  fprintf(b, "\t<div class=\"divTable\">\n");
+  fprintf(b, "\t\t<div class=\"divRow\">\n");
+  fprintf(b, "\t\t\t<div class=\"divCellShort\"> # </div>\n");
+  fprintf(b, "\t\t\t<div class=\"divCell\"> Участнник </div>\n");
+  fprintf(b, "\t\t\t<div class=\"divCell\"> Счет </div>\n");
+  fprintf(b, "\t\t\t<div class=\"divCell\"> Предв. игра </div>\n");
+  fprintf(b, "\t\t\t<div class=\"divCell\"> Предв. счет </div>\n");
+  fprintf(b, "\t\t</div>\n");
+  for (int i = 0; i < len(participants); i++) {
+    fprintf(b, "\t\t<div class=\"divRow\">\n");
+    fprintf(b, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[3 + i % 2], i + 1);
+    fprintf(b, "\t\t\t<div class=\"%s\"> %s </div>\n", cells[1 + i % 2], participants[i]->name.c_str());
+    fprintf(b, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[1 + i % 2], participants[i]->score);
+    fprintf(b, "\t\t\t<div class=\"%s\"> <a href=\"http://informatics.mccme.ru/ants/visualizer.html?%d\"> Посмотреть </a></div>\n", 
+            cells[1 + i % 2], participants[i]->preliminaryPlay->id);
+    fprintf(b, "\t\t\t<div class=\"%s\"> %d </div>\n", cells[1 + i % 2], participants[i]->preliminaryScore);
+    fprintf(b, "\t\t</div>\n");
+  }
+  fprintf(b, "\t</div>\n");
   fprintf(b, "</body>\n");
   fprintf(b, "</html>\n");
   

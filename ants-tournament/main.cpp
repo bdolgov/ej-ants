@@ -1,4 +1,5 @@
 #include "tournament.hpp"
+#include <future>
 #include <iostream>
 #include <memory>
 #include <map>
@@ -12,7 +13,8 @@ using namespace std;
 
 int Play::id_seq;
 int Group::id_seq = 1;
-void judge(Play* p)
+
+void judge(Play* p, int server = 0)
 {
 	for (auto& i : p->players)
 	{
@@ -29,7 +31,7 @@ void judge(Play* p)
 		title << "\"" << i.teamId << "\":\"" << i.participant->name << " (" << i.participant->id << ")\"";
 		ps[i.teamId] = &i;
 	}
-	ofstream inputFile("run.in");
+	ofstream inputFile(to_string(p->id) + ".in");
 	inputFile << "{" << title.str() << "}" << endl;
 	for (auto& i : ps)
 	{
@@ -37,10 +39,10 @@ void judge(Play* p)
 	}
 	inputFile.close();
 
-	setenv("ANTSTT_MAP", cfg()->tournamentMap().c_str(), 1);
+	setenv("ANTSTT_MAP", p->map.c_str(), 1);
 	setenv("ANTSTT_STEPS", to_string(cfg()->steps()).c_str(), 1);
 
-	FILE *results = popen(("./run-tt " + to_string(p->id)).c_str(), "r");
+	FILE *results = popen(("./run-tt " + to_string(p->id) + " " + to_string(server)).c_str(), "r");
 	if (!results)
 	{
 		cerr << "run-tt did not start: ";
@@ -76,20 +78,24 @@ void generatePlays(Group* g, Participant* fakeParticipant)
 	};
 	vector<int> localPermutation { 0, 1, 2, 3 };
 	random_shuffle(localPermutation.begin(), localPermutation.end());
-	for (auto& i : permutations)
+	for (auto& j : cfg()->maps())
 	{
-		g->plays.emplace_back();
-		Play& p = *(g->plays.rbegin());
-		int idx = 0;
-		for (auto& j : g->participants)
+		for (auto& i : permutations)
 		{
-			p.players.emplace_back(j.participant, localPermutation[i[idx++]]);
+			g->plays.emplace_back();
+			Play& p = *(g->plays.rbegin());
+			p.map = j;
+			int idx = 0;
+			for (auto& j : g->participants)
+			{
+				p.players.emplace_back(j.participant, localPermutation[i[idx++]]);
+			}
+			while (idx < 4)
+			{
+				p.players.emplace_back(fakeParticipant, localPermutation[i[idx++]]);
+			}
+			p.steps = cfg()->steps();
 		}
-		while (idx < 4)
-		{
-			p.players.emplace_back(fakeParticipant, localPermutation[i[idx++]]);
-		}
-		p.steps = cfg()->steps();
 	}
 }
 
@@ -154,6 +160,7 @@ int main()
 	{
 		cerr << "Processing player " << i->name << endl;
 		Play *pp = i->preliminaryPlay = new Play;
+		pp->map = cfg()->preliminaryMap();
 		pp->players.emplace_back(&*fakeParticipant, 0);
 		pp->players.emplace_back(&*i, 1);
 		pp->players.emplace_back(&*fakeParticipant, 2);
@@ -192,7 +199,7 @@ int main()
 		groups[0].emplace_back(move(curGroup));
 	}
 	cerr << "Round 0 groups have been generated." << endl;
-
+	int server = 0;
 	for (int round = 0; !round || groups[round - 1].size() > 1;)
 	{
 		cerr << "Generating round " << round << " plays..." << endl;
@@ -207,11 +214,21 @@ int main()
 		for (auto& j : groups[round])
 		{
 			cerr << "Starting group " << j->id << " plays..." << endl;
-			for (auto& k : j->plays)
+			vector<future<void>> results;
+			for (int k = 0; k < j->plays.size(); ++k)
 			{
-				cerr << "Starting play " << k.id << "..." << endl;
-				judge(&k);
-				cerr << "Play " << k.id << " has finished." << endl;
+				//auto& k : j->plays
+				cerr << "Starting play " << j->plays[k].id << "..." << endl;
+				results.emplace_back(async(std::launch::async, judge, &j->plays[k], k % 4));;
+				if (k % 4 == 3)
+				{
+					for (auto& i : results)
+					{
+						i.get();
+						cerr << "A play have finished." << endl;
+					}
+					results.clear();
+				}
 			}
 			cerr << "Group " << j->id << " plays have finished." << endl;
 			j->updateResults();

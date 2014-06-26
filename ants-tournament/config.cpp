@@ -6,7 +6,7 @@ struct Cfg : Configuration
 	int steps() const { return 2000; }
 	string preliminaryMap() const { return "02"; }
 	string preliminaryStrategy() const { return "407"; }
-	string tournamentMap() const { return "02"; }
+	vector<string> maps() const { return { "00", "02", "00", "02" }; }
 
 	vector<pair<string, string>> getParticipants() const;
 

@@ -37,6 +37,7 @@ struct Play
 	int steps = 0;
 	static int id_seq;
 	int id = id_seq++; /* id игры для json */
+	string map;
 };
 
 struct Group;
@@ -67,7 +68,7 @@ struct Configuration
 	virtual int steps() const = 0;
 	virtual string preliminaryMap() const = 0;
 	virtual string preliminaryStrategy() const = 0;
-	virtual string tournamentMap() const = 0;
+	virtual vector<string> maps() const = 0;
 	virtual vector<pair<string, string>> getParticipants() const = 0;
 
 	static Configuration* instance;

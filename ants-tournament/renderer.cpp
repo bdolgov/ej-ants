@@ -5,16 +5,18 @@
 #include <cassert>
 
 #define len(x) ((int)(x).size())
+#define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
 const int MAXL = 30;
 
 using namespace std;
 
-const char *cells[2] = {"divWinCell", "divLoseCell"};
+const char *cells[2] = {"divLoseCell", "divWinCell"};
 
 struct Renderer : IRenderer
 {
     void render(const vector<vector<Group*> >& groups);
+    void renderParticipants(const vector<Participant*>& participants);
 };
 
 IRenderer* IRenderer::get()
@@ -82,13 +84,24 @@ void make_group_table(char *s, int round_id, int group_id, const Group* group) {
 
 FILE *b;
 
-void make_round(int x, const vector<vector<Group*> >& groups, const vector<vector <string> > &gtables) {
+void make_round(int x, const vector<vector<Group*> >& groups, const vector<vector <string> > &gtables, const vector<vector<int> > &cords) {
   fprintf(b, "\t<div class=\"divWrap\">\n");
   /*if (x != len(groups) - 1) {
     fprintf(b, "\t\t<div class=\"divHalfFiller\"> </div>\n");   
   }*/
   
-  for (int i = 0; i < len(groups[x]); i++) {
+  int curx = 0;
+  
+  for (int i = 0; i < len(groups[x]); i++) {  
+    while (curx + 2 <= cords[x][i]) {
+      fprintf(b, "\t\t<div class=\"divFiller\">  </div>\n");
+      curx += 2;
+    }
+    while (curx + 1 <= cords[x][i]) {
+      fprintf(b, "\t\t<div class=\"divHalfFiller\"> </div>\n");     
+      curx += 1;
+    }
+    curx += 2;
     fprintf(b, "\t\t<div class=\"divTable\">\n");
     fprintf(b, "\t\t\t<div class=\"divRow\">\n");
     fprintf(b, "\t\t\t\t<div class=\"divHeadCell\"> <a href=\"%s\" target=\"_blank\"> Раунд %d. Группа %d. </a> </div>\n", 
@@ -99,6 +112,12 @@ void make_round(int x, const vector<vector<Group*> >& groups, const vector<vecto
       fprintf(b, "\t\t\t\t<div class=\"%s\"> %s </div>\n", cells[j / 2], groups[x][i]->participants[j].participant->name.c_str());
       fprintf(b, "\t\t\t\t<div class=\"%s\"> %d </div>\n", cells[j / 2], groups[x][i]->participants[j].score);
       fprintf(b, "\t\t\t</div>\n");     
+    }
+    for (int j = 0; j < 4 - len(groups[x][i]->participants); j++) {
+      fprintf(b, "\t\t\t<div class=\"divRow\">\n");
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[1]);
+      fprintf(b, "\t\t\t\t<div class=\"%s\"> ---- </div>\n", cells[1]);
+      fprintf(b, "\t\t\t</div>\n");
     }
     fprintf(b, "\t\t</div>\n");    
   }
@@ -113,6 +132,19 @@ void Renderer::render(const vector<vector<Group*> >& groups)
 {
   system("mkdir tables");
   vector<vector <string> > gtables(len(groups));
+  vector<vector<int> > cords(len(groups));
+  
+  int k = 1;
+  while (k < len(groups.back()))
+    k *= 2;  
+  for (int i = 0; i < k; i++) {    
+    cords.back().push_back(i * 2);
+  }
+  for (int i = len(cords) - 2; i >= 0; i--) {
+    for (int j = 0; j < len(cords[i + 1]); j += 2) {
+      cords[i].push_back((cords[i + 1][j] + cords[i + 1][j + 1]) / 2);
+    }
+  }
   
   for (int i = 0; i < len(groups); i++) {
     gtables[i].resize(len(groups[i]));    
@@ -136,9 +168,29 @@ void Renderer::render(const vector<vector<Group*> >& groups)
   fprintf(b, "</head>\n");
   fprintf(b, "<body>\n");
   for (int i = 0; i < len(groups); i++) {
-    make_round(len(groups) - i - 1, groups, gtables);
+    make_round(len(groups) - i - 1, groups, gtables, cords);
   }  
   fprintf(b, "</body>\n");
   fprintf(b, "</html>\n");
+  fclose(b);
+}
+
+void Renderer::renderParticipants(const vector<Participant*>& participants) {
+  b = fopen("./tables/participants.html", "wt");
+  assert(b);
+   fprintf(b, "<html>\n");
+  
+  fprintf(b, "<head>\n");
+  fprintf(b, "\t<title>Результаты</title>\n");
+  fprintf(b, "\t<meta charset='utf-8'/>\n");
+  fprintf(b, "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../tables.css\">\n");
+  fprintf(b, "</head>\n");
+  fprintf(b, "<body>\n");
+  
+  
+  
+  fprintf(b, "</body>\n");
+  fprintf(b, "</html>\n");
+  
   fclose(b);
 }

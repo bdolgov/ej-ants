@@ -49,22 +49,61 @@
   margin: 2px; 
   float:left;/*fix for  buggy browsers*/
   display:table-column;
-  width:150px;
+  width:140px;
   background-color:#D8BFD8;
 }
+
+.divCellShort
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:40px;
+  background-color:#D8BFD8;
+}
+
 .divWinCell
 {
   margin: 2px; 
   float:left;/*fix for  buggy browsers*/
   display:table-column;
-  width:150px;
+  width:140px;
   background-color:#BBBBFF;
 }
+
+.divWinCellSmooth
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:140px;
+  background-color:#9999FF;
+}
+
+.divWinCellShort
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:40px;
+  background-color:#BBBBFF;
+}
+
+.divWinCellSmoothShort
+{
+  margin: 2px; 
+  float:left;/*fix for  buggy browsers*/
+  display:table-column;
+  width:40px;
+  background-color:#9999FF;
+}
+
+
 .divLoseCell
 {
   margin: 2px; 
   float:left;/*fix for  buggy browsers*/
   display:table-column;
-  width:150px;
+  width:140px;
   background-color:#FFBD9C;
 }

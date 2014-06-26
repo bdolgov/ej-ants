@@ -53,6 +53,7 @@ void judge(Play* p, int server = 0)
 		}
 		return;
 	}
+	map<string, int> k = {{"03", 7},{"04", 140},{"05", 1}, {"06", 4}, {"02", 1}};
 	for (auto& i : ps)
 	{
 		if (fscanf(results, "%d", &(i->score)) != 1)
@@ -61,6 +62,7 @@ void judge(Play* p, int server = 0)
 			i->score = 0;
 			break;
 		}
+		i->score *= k[p->map];
 	}
 	fclose(results);
 }

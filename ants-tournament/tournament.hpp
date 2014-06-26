@@ -19,6 +19,8 @@ struct Participant
 
 	int preliminaryScore = -1; /* Предварительный балл */
 	Play* preliminaryPlay = 0; /* Указатель на предварительную игру */
+
+	int score = 0;
 };
 
 struct Player
@@ -45,6 +47,7 @@ struct GroupParticipant
 	Participant *participant = nullptr; /* Участник */
 	Group *source = nullptr; /* Группа, из которой он пришел, либо nullptr, если это неприменимо */
 	int score = -1; /* Суммарный рейтинг */
+	bool passed = false; /* Прошел ли в следующий раунд */
 };
 
 struct Group

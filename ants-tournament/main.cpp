@@ -6,6 +6,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <fstream>
+#include <tuple>
 
 using namespace std;
 
@@ -118,6 +119,23 @@ void Group::updateResults()
 		});
 }
 
+template<class T>
+void shuffleVector(vector<T>& v)
+{
+	vector<T> t;
+	int sz = v.size() & (~3);
+	for (int i = 0; i < sz; ++i)
+	{
+		int idx = i / 4 + ((i % 4) & 1 ? sz / 4 : 0) + ((i % 4) & 2 ? sz / 2 : 0);
+		t.emplace_back(move(v[idx]));
+	}
+	for (int i = sz; i < v.size(); ++i)
+	{
+		t.emplace_back(move(v[i]));
+	}
+	swap(v, t);
+}
+
 int main()
 {
 	Play::id_seq = cfg()->playIdSeq();
@@ -146,43 +164,15 @@ int main()
 	}
 	cerr << "Preliminary plays have finished." << endl; 
 
-	std::sort(participants.begin(), participants.end(),
+	sort(participants.begin(), participants.end(),
 		[](const unique_ptr<Participant>& a, const unique_ptr<Participant>& b)
 		{
 			return a->preliminaryScore > b->preliminaryScore;
 		});
 	
-	/* Rewrite? */
-	int sz = participants.size() / 4 * 4;
-	vector<unique_ptr<Participant>> participants0;
-	for (int i = 0; i < sz; ++i)
-	{
-		int idx;
-		if (i % 4 == 0)
-		{
-			idx = i / 4;
-		}
-		else if (i % 4 == 1)
-		{
-			idx = i / 4 + sz / 4;
-		}
-		else if (i % 4 == 2)
-		{
-			idx = i / 4 + sz / 2;
-		}
-		else
-		{
-			idx = i / 4 + sz / 2 + sz / 4;
-		}
-		participants0.emplace_back(move(participants[idx]));
-	}
-	for (int i = sz; i < participants.size(); ++i)
-	{
-		participants0.emplace_back(move(participants[i]));
-	}
-	swap(participants, participants0);
+	shuffleVector(participants);
 	for (auto& i : participants)
-		cerr << i->name << endl;
+		cerr << i->name << " " << i->preliminaryScore << endl;
 
 	vector<vector<unique_ptr<Group>>> groups;
 	cerr << "Generating round 0 groups..." << endl;
@@ -231,14 +221,22 @@ int main()
 		int next = round + 1;
 		cerr << "Generating round " << next << " groups." << endl;
 		groups.emplace_back();
-		vector<pair<Participant*, Group*>> winners;
+		vector<tuple<int, GroupParticipant*, Group*>> winners;
 		for (auto& j : groups[round])
 		{
-			for (int i = 0; i < 2 && i < j->participants.size(); ++i)
+			for (auto& i : j->participants)
 			{
-				winners.emplace_back(j->participants[i].participant, &*j);
+				winners.emplace_back(-i.score, &i, &*j);
+				i.participant->score += i.score;
 			}
 		}
+		sort(winners.begin(), winners.end());
+		winners.resize((winners.size() + 1) / 2);
+		for (auto& i : winners)
+		{
+			get<1>(i)->passed = true;
+		}
+		shuffleVector(winners);
 		curGroup.reset(new Group);
 		for (auto& i : winners)
 		{
@@ -247,7 +245,7 @@ int main()
 				groups[next].emplace_back(move(curGroup));
 				curGroup.reset(new Group);
 			}
-			curGroup->participants.emplace_back(i.first, i.second);
+			curGroup->participants.emplace_back(get<1>(i)->participant, get<2>(i));
 		}
 		if (curGroup->participants.size())
 		{
@@ -275,5 +273,10 @@ int main()
 	{
 		participants1.emplace_back(&*i);
 	}
+	sort(participants1.begin(), participants1.end(),
+		[](Participant* a, Participant* b)
+		{
+			return a->score > b->score;
+		});
 	r->renderParticipants(participants1);
 }

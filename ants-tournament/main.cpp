@@ -227,7 +227,7 @@ int main()
 					for (auto& i : results)
 					{
 						i.get();
-						cerr << "A play have finished." << endl;
+						cerr << "A play has finished." << endl;
 					}
 					results.clear();
 				}
@@ -243,14 +243,14 @@ int main()
 		vector<tuple<int, GroupParticipant*, Group*>> winners;
 		for (auto& j : groups[round])
 		{
-			for (auto& i : j->participants)
+			for (int i0 = 0; i0 < j->participants.size() && i0 < 3; ++i0)
 			{
+				auto &i = j->participants[i0];
 				winners.emplace_back(-i.score, &i, &*j);
 				i.participant->score += i.score << round;
 			}
 		}
 		sort(winners.begin(), winners.end());
-		winners.resize((winners.size() + 1) / 2);
 		for (auto& i : winners)
 		{
 			get<1>(i)->passed = true;

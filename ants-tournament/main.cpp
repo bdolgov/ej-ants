@@ -227,7 +227,7 @@ int main()
 			for (auto& i : j->participants)
 			{
 				winners.emplace_back(-i.score, &i, &*j);
-				i.participant->score += i.score;
+				i.participant->score += i.score << round;
 			}
 		}
 		sort(winners.begin(), winners.end());

@@ -145,7 +145,7 @@ void shuffleVector(vector<T>& v)
 int main()
 {
 	Play::id_seq = cfg()->playIdSeq();
-
+	srand(2014);
 	vector<unique_ptr<Participant>> participants;
 	for (auto& i : cfg()->getParticipants())
 	{

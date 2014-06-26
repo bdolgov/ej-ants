@@ -1,17 +1,21 @@
 #!/bin/bash
 echo "RUN ID $1" >> /tmp/antstt.log
-ANTSTT_ARGS="-t /tmp/antstt.$$" /home/judges/compile/scripts/antstt run.in $1 2>> /tmp/antstt.log
+WD=`pwd`
+cd /home/judges/ants/tmp/
+ANTSTT_ARGS="-t /tmp/antstt.$$" /home/judges/compile/scripts/antstt $WD/$1.in $1 2>> /tmp/antstt.log
 if [ "$?" != "0" ]; then
 	echo "run-tt: failed to compile" >&2
 	exit 1
 fi
 echo "RUN ID $1" >> /tmp/ants-run.log
-./$1 2>>/tmp/ants-run.log > /home/judges/ants/json/$1.json
+SERVERS[0]="192.168.56.10"
+SERVERS[1]="192.168.56.12"
+SERVERS[2]="192.168.56.13"
+SERVERS[3]="192.168.56.14"
+ssh ${SERVERS[$2]} "/home/judges/ants/tmp/$1 2>>/tmp/ants-run.log > /home/judges/ants/json/$1.json && cat /tmp/antstt.$$" | tee $WD/cache/$1
 if [ "$?" != "0" ]; then
 	echo "run-tt: failed to run" >&2
 	exit 1
 fi
-cat /tmp/antstt.$$
 rm -f "$1"
-rm -f "/tmp/antstt.$$"
-rm -f "run.in"
+rm -f "$WD/$1.in"

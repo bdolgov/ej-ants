@@ -2,11 +2,11 @@
 #include <fstream>
 struct Cfg : Configuration
 {
-	int playIdSeq() const { return 910000; }
-	int steps() const { return 2000; }
+	int playIdSeq() const { return 920000; }
+	int steps() const { return 200; }
 	string preliminaryMap() const { return "02"; }
 	string preliminaryStrategy() const { return "407"; }
-	vector<string> maps() const { return { "00", "02", "00", "02" }; }
+	vector<string> maps() const { return { "00", "02",/* "05", "06" */}; }
 
 	vector<pair<string, string>> getParticipants() const;
 

@@ -10,7 +10,7 @@ renderer.o: renderer.cpp tournament.hpp
 	g++ -o renderer.o -c renderer.cpp -std=c++11 -ggdb
 
 tournament: main.o config.o renderer.o
-	g++ -o tournament main.o config.o renderer.o -ggdb
+	g++ -o tournament main.o config.o renderer.o -ggdb -pthread
 
 clean:
 	rm -f *.o tournament
